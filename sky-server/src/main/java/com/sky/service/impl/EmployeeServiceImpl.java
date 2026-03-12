@@ -1,17 +1,27 @@
 package com.sky.service.impl;
 
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.sky.constant.MessageConstant;
+import com.sky.constant.PasswordConstant;
 import com.sky.constant.StatusConstant;
+import com.sky.context.BaseContext;
+import com.sky.dto.EmployeeDTO;
 import com.sky.dto.EmployeeLoginDTO;
 import com.sky.entity.Employee;
 import com.sky.exception.AccountLockedException;
 import com.sky.exception.AccountNotFoundException;
 import com.sky.exception.PasswordErrorException;
 import com.sky.mapper.EmployeeMapper;
+import com.sky.result.PageResult;
 import com.sky.service.EmployeeService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
+
+import java.time.LocalDateTime;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
@@ -39,7 +49,9 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
 
         //密码比对
-        // TODO 后期需要进行md5加密，然后再进行比对
+        //这里的md5加密是spring提供的工具类。
+        password = DigestUtils.md5DigestAsHex(password.getBytes());
+
         if (!password.equals(employee.getPassword())) {
             //密码错误
             throw new PasswordErrorException(MessageConstant.PASSWORD_ERROR);
@@ -53,5 +65,49 @@ public class EmployeeServiceImpl implements EmployeeService {
         //3、返回实体对象
         return employee;
     }
+
+    @Override
+    public void save(EmployeeDTO employeeDTO) {
+        Employee employee = new Employee();
+        //这里不用一个个的拷贝直接使用BeanUtils.copyProperties方法
+        //使用该方法的前提是属性名得相同才行
+        BeanUtils.copyProperties(employeeDTO, employee);
+        //设置其他默认值
+        employee.setStatus(StatusConstant.ENABLE);//这里如果写0/1就不好维护，所以封装成常量类，也比较直白的能看到单词表示的意思
+
+        //密码加密默认是123456，存的时候进行加密
+        employee.setPassword(DigestUtils.md5DigestAsHex(PasswordConstant.DEFAULT_PASSWORD.getBytes()));
+        //字符串方法getBytes()将字符串转换为字节数组，而且面对这种经常用的常量也用常量类表示，比较方便维护！
+
+        //设置默认创建时间和更新时间
+        employee.setCreateTime(LocalDateTime.now());
+        employee.setUpdateTime(LocalDateTime.now());
+        //设置默认创建人和更新人
+        employee.setCreateUser(BaseContext.getCurrentId());
+        employee.setUpdateUser(BaseContext.getCurrentId());
+
+        //数据准备好了就插入数据库
+        employeeMapper.insert(employee);
+    }
+
+    /**
+     * 分页查询员工
+     * @param page
+     * @param pageSize
+     * @param name
+     * @return
+     */
+
+    @Override
+    public PageResult page(Integer page, Integer pageSize, String name) {
+        //1、分页查询数据库中的数据
+        PageHelper.startPage(page, pageSize);
+        //2、根据name进行模糊查询
+        Page<Employee> list = employeeMapper.pageQuery(name);
+        //page类本身提供了方法来获取总记录数和当前页数据集合
+
+        return new PageResult(list.getTotal(), list.getResult());
+    }
+
 
 }
