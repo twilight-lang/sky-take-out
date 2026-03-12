@@ -35,8 +35,20 @@ public interface EmployeeMapper {
     Page<Employee> pageQuery(String name);
 
     /**
+     * 根据id查询员工
+     * @param id
+     * @return
+     */
+     @Select("select * from employee where id = #{id}")
+    Employee getById(Long id);
+
+
+    /**
      * 根据主键动态修改属性
      * @param employee
      */
     void update(Employee employee);
+
+
+
 }
