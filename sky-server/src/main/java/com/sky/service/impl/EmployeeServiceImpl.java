@@ -80,11 +80,11 @@ public class EmployeeServiceImpl implements EmployeeService {
         //字符串方法getBytes()将字符串转换为字节数组，而且面对这种经常用的常量也用常量类表示，比较方便维护！
 
         //设置默认创建时间和更新时间
-        employee.setCreateTime(LocalDateTime.now());
-        employee.setUpdateTime(LocalDateTime.now());
+//        employee.setCreateTime(LocalDateTime.now());
+//        employee.setUpdateTime(LocalDateTime.now());
         //设置默认创建人和更新人
-        employee.setCreateUser(BaseContext.getCurrentId());
-        employee.setUpdateUser(BaseContext.getCurrentId());
+//        employee.setCreateUser(BaseContext.getCurrentId());
+//        employee.setUpdateUser(BaseContext.getCurrentId());
 
         //数据准备好了就插入数据库
         employeeMapper.insert(employee);
@@ -131,8 +131,8 @@ public class EmployeeServiceImpl implements EmployeeService {
         Employee employee = new Employee();
         //对象属性拷贝
         BeanUtils.copyProperties(employeeDTO, employee);
-        employee.setUpdateTime(LocalDateTime.now());
-        employee.setUpdateUser(BaseContext.getCurrentId());
+//        employee.setUpdateTime(LocalDateTime.now());
+//        employee.setUpdateUser(BaseContext.getCurrentId());
         //这里update(方法)需要传入employee对象，所以要进行EmployeeDTO转Employee
         employeeMapper.update(employee);
     }

@@ -1,7 +1,9 @@
 package com.sky.mapper;
 
 import com.github.pagehelper.Page;
+import com.sky.annotation.AutoFill;
 import com.sky.entity.Employee;
+import com.sky.enumeration.OperationType;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
@@ -25,6 +27,7 @@ public interface EmployeeMapper {
     //而且注意，类中属性是驼峰命名法，而数据库表中是下划线命名法，所以要注意对应起来
     @Insert("insert into employee (name, username, password, phone, sex, id_number, status, create_time, update_time, create_user, update_user) " +
             "values (#{name}, #{username}, #{password}, #{phone}, #{sex}, #{idNumber}, #{status}, #{createTime}, #{updateTime}, #{createUser}, #{updateUser})")
+    @AutoFill(value = OperationType.INSERT)
     void insert(Employee employee);
 
     /**
@@ -35,19 +38,20 @@ public interface EmployeeMapper {
     Page<Employee> pageQuery(String name);
 
     /**
+     * 根据主键动态修改属性
+     * @param employee
+     */
+    @AutoFill(value = OperationType.UPDATE)
+    void update(Employee employee);
+
+
+    /**
      * 根据id查询员工
      * @param id
      * @return
      */
-     @Select("select * from employee where id = #{id}")
+    @Select("select * from employee where id = #{id}")
     Employee getById(Long id);
-
-
-    /**
-     * 根据主键动态修改属性
-     * @param employee
-     */
-    void update(Employee employee);
 
 
 
