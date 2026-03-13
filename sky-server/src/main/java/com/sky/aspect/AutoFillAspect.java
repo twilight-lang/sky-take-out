@@ -29,15 +29,18 @@ public class AutoFillAspect {
     //通知，前置通知，在目标方法之前执行
     @Before("addFillPointcut()")
     public void autoFill(JoinPoint joinPoint) throws Throwable {
+        //joinPoint就相当于当前被拦截的方法
         //获取当前被拦截的方法上的数据库操作类型
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         AutoFill autoFill = signature.getMethod().getAnnotation(AutoFill.class);
         OperationType operation = autoFill.value();//最终获得了操作类型
+
         //获取到当前被拦截的方法的参数——实体对象
         Object[] args = joinPoint.getArgs();
         if(args == null || args.length == 0) {
             return;
         }
+
         Object entity = args[0];
         //准备赋值的数据
         Long currentId = BaseContext.getCurrentId();
