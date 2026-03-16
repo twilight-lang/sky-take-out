@@ -9,4 +9,12 @@
         </foreach>
     </select>
 
+    <insert id="insertBatch" parameterType="java.util.List">
+        insert into setmeal_dish(setmeal_id, dish_id, number, price)
+        values
+        <foreach collection="setmealDishes" item="setmealDish" separator=",">
+            (#{setmealDish.setmealId}, #{setmealDish.dishId}, #{setmealDish.number}, #{setmealDish.price})
+        </foreach>
+    </insert>
+<!--collection="setmealDishes"，这里的setmealDishes是传进来的参数名。这里就是foreach的遍历对象    -->
 </mapper>

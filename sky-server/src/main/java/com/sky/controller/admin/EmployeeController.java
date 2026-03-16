@@ -32,7 +32,6 @@ public class EmployeeController {
 
     /**
      * 登录
-     *
      * @param employeeLoginDTO
      * @return
      */
@@ -50,7 +49,7 @@ public class EmployeeController {
                 jwtProperties.getAdminTtl(),
                 claims);
 
-        //过期时间
+        //
         EmployeeLoginVO employeeLoginVO = EmployeeLoginVO.builder()
                 .id(employee.getId())
                 .userName(employee.getUsername())
