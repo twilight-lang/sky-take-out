@@ -76,4 +76,30 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         }
 
     }
+
+    /**
+     * 查询购物车物品
+     * @return
+     */
+    @Override
+    public List<ShoppingCart> showShoppingCart() {
+        //根据用户id查询购物车所有物品
+        ShoppingCart shoppingCart = new ShoppingCart();
+        shoppingCart.setUserId(BaseContext.getCurrentId());
+        //这里是直接复用ShoppingCartMapper的list方法，通过只注入用户id，查询该用户所有购物车物品
+        List<ShoppingCart> list = shoppingCartMapper.list(shoppingCart);
+        return list;
+    }
+
+    /**
+     * 清空购物车
+     */
+    @Override
+    public void cleanShoppingCart() {
+        //根据用户id删除购物车所有物品
+        ShoppingCart shoppingCart = new ShoppingCart();
+        shoppingCart.setUserId(BaseContext.getCurrentId());
+        shoppingCartMapper.deleteByUserId(shoppingCart);
+    }
+
 }
