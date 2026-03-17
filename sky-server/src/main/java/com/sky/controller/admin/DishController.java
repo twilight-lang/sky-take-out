@@ -10,10 +10,12 @@ import com.sky.service.DishService;
 import com.sky.vo.DishVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * 菜品管理
@@ -26,6 +28,9 @@ public class DishController {
     @Autowired
     private DishService dishService;
 
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
+
     /**
      * 新增菜品
      *
@@ -34,7 +39,10 @@ public class DishController {
      */
     @PostMapping
     public Result save(@RequestBody DishDTO dishDTO) {
+        //新增菜品和对应的口味
         dishService.saveWithFlavor(dishDTO);
+        //清理缓存数据
+        cleanCache("dish_" + dishDTO.getCategoryId());
         return Result.success();
     }
 
@@ -55,7 +63,10 @@ public class DishController {
      */
     @DeleteMapping
     public Result delete(@RequestParam("ids") List<Long> ids) {
+        //删除菜品
         dishService.deleteBatch(ids);
+        //清理缓存数据
+        cleanCache("dish_*");
         return Result.success();
     }
 
@@ -81,6 +92,8 @@ public class DishController {
     public Result updateWithFlavor(@RequestBody DishDTO dishDTO) {
         //更新菜品和对应的口味
         dishService.updateWithFlavor(dishDTO);
+        //清理缓存数据
+        cleanCache("dish_*");
         return Result.success();
     }
 
@@ -93,5 +106,14 @@ public class DishController {
     public Result<List<Dish>> getAll(Long categoryId) {
         List<Dish> dishList = dishService.list(categoryId);
         return Result.success(dishList);
+    }
+
+    /**
+     * 清理缓存数据
+     * @param pattern
+     */
+    private void cleanCache(String pattern){
+        Set keys =  stringRedisTemplate.keys(pattern);
+        stringRedisTemplate.delete(keys);
     }
 }
