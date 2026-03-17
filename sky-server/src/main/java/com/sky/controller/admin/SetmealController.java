@@ -7,6 +7,7 @@ import com.sky.result.Result;
 import com.sky.service.SetmealService;
 import com.sky.vo.SetmealVO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,6 +23,7 @@ public class SetmealController {
      * 新增套餐
      */
     @PostMapping()
+    @CacheEvict(cacheNames = "setmealCache", key = "#setmealDTO.categoryId")
     public Result create(@RequestBody SetmealDTO setmealDTO) {
         setmealService.saveWithDish(setmealDTO);
 
@@ -43,6 +45,7 @@ public class SetmealController {
      * @return
      */
     @DeleteMapping()
+    @CacheEvict(cacheNames = "setmealCache",allEntries = true)
     public Result delete(@RequestParam("ids") List<Long> ids) {
         setmealService.deleteBatch(ids);
         return Result.success();
@@ -65,7 +68,8 @@ public class SetmealController {
      * @return
      */
      @PutMapping()
-    public Result update(@RequestBody SetmealDTO setmealDTO) {
+     @CacheEvict(cacheNames = "setmealCache",allEntries = true)
+     public Result update(@RequestBody SetmealDTO setmealDTO) {
         setmealService.update(setmealDTO);
         return Result.success();
     }
@@ -74,6 +78,7 @@ public class SetmealController {
      * 套餐起售/停售
      */
     @PostMapping("/status/{status}")
+    @CacheEvict(cacheNames = "setmealCache",allEntries = true)
     public Result status(@PathVariable Integer status, Long id) {
         setmealService.startOrStop(status,id);
         return Result.success();
