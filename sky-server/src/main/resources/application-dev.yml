@@ -30,3 +30,7 @@ sky:
 #    上面的域名是临时域名，用内网穿透做的
     refundNotifyUrl: https://6619cf50.r6.cpolar.top/notify/refundSuccess
 
+  shop:
+    address: 北京市海淀区上地十街10号
+  baidi:
+    ak: 12345678901234567890123456789012
