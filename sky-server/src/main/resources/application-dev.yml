@@ -21,3 +21,12 @@ sky:
   wechat:
     appid: wxfbf692bd059944c5
     secret: b8f8bb6ef15e487aaf7d08c5e2920756
+    mchid: 1561414331
+    mchSerialNo: 4B3B3DC35414AD50B1B755BAF8DE9CC7CF407606
+    privateKeyFilePath: D:\pay\aplicient_key.pem
+    apiV3Key: CZBK51236435wxpay435434323FFDuv3
+    weChatPayCertFilePath: D:\pay\wechatpay_166D96F876F45C7D07CE98952A96EC980368ACFC.pem
+    notifyUrl: https://6619cf50.r6.cpolar.top/notify/paySuccess
+#    上面的域名是临时域名，用内网穿透做的
+    refundNotifyUrl: https://6619cf50.r6.cpolar.top/notify/refundSuccess
+
