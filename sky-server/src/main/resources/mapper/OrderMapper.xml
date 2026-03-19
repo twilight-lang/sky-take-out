@@ -56,7 +56,7 @@
             order by order_time desc
         </select>
 
-    <select id="sumByMap" parameterType="java.util.Map" resultType="java.lang.Long">
+        <select id="sumByMap" parameterType="java.util.Map" resultType="java.lang.Double">
             select sum(amount) from orders
            <where>
                 <if test="beginTime != null and endTime != null">
@@ -67,4 +67,26 @@
                 </if>
            </where>
     </select>
+
+    <select id="sumOrderByMap" parameterType="java.util.Map" resultType="java.lang.Integer">
+            select count(*) from orders
+           <where>
+                <if test="beginTime != null and endTime != null">
+                    and order_time between #{beginTime} and #{endTime}
+                </if>
+                <if test="status != null">
+                    and status = #{status}
+                </if>
+           </where>
+    </select>
+
+    <select id="top10" parameterType="java.time.LocalDateTime" resultType="com.sky.dto.GoodsSalesDTO">
+        select od.name as name , sum(od.number) as number
+        from orders o left join order_detail od on o.id = od.order_id
+        where o.order_time between #{beginTime} and #{endTime} and o.status = 5
+        group by od.name
+        order by number desc
+        limit 10
+    </select>
+
 </mapper>
