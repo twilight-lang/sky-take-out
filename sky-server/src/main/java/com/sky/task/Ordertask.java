@@ -15,7 +15,7 @@ public class Ordertask {
     @Autowired
     private OrderMapper orderMapper;
     /**
-     * 定时任务
+     * 定时任务，处理超时订单
      * //每分钟触发一次
      */
     @Scheduled(cron = "0 * * * * ?")
@@ -42,5 +42,15 @@ public class Ordertask {
     public void  processDeliveryOrder(){
         List<Orders> ordersList = orderMapper.getByStatusAndOrderTimeLT(Orders.DELIVERY_IN_PROGRESS, LocalDateTime.now().minusMinutes(60));
 
+
+        if(ordersList != null && ordersList.size() > 0){
+            for(Orders orders : ordersList){
+                //取消订单
+                orders.setStatus(Orders.CANCELLED);
+                orders.setCancelTime(LocalDateTime.now());
+                orders.setCancelReason("订单超时未送达");
+                orderMapper.update(orders);
+            }
+        }
     }
 }
