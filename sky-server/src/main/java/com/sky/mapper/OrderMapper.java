@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Select;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface OrderMapper {
@@ -58,4 +59,12 @@ public interface OrderMapper {
      */
     @Select("select count(*) from orders where status = #{status}")
     Integer countStatus(Integer status);
+
+    /**
+     * 根据时间范围查询订单金额
+     * @param map
+     * @return
+     */
+    //@Select("select sum(amount) from orders where order_time between #{beginTime} and #{endTime} and status = #{status}")
+    Long sumByMap(Map<String, Object> map);
 }
